@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
-const TOKEN = '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'
+const TOKEN = "";
 const OWNER = "hericmendez";
 const REPO = "git-posts";
 const BRANCH = "main";

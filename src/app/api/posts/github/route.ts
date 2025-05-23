@@ -4,7 +4,7 @@ import { Octokit } from '@octokit/rest'
 import slugify from '@/lib/slugify'
 import { createMarkdown } from '@/lib/markdown'
 
-const GITHUB_TOKEN = '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'
+const GITHUB_TOKEN = "";
 const REPO_OWNER  = 'hericmendez'
 const REPO_NAME   = 'git-posts'
 const BRANCH      = 'main'
