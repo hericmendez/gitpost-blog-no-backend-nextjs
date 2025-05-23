@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
+import { commitPostToGitHub } from "@/lib/github";
 
-const TOKEN = "";
+const TOKEN = "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";
 const OWNER = "hericmendez";
 const REPO = "git-posts";
 const BRANCH = "main";
@@ -42,6 +43,10 @@ export async function DELETE(
     return NextResponse.json({ success: true });
   } catch (err: any) {
     console.error("Erro ao deletar:", err);
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: err.message },
+      { status: 500 }
+    );
   }
 }
+

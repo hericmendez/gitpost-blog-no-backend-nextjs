@@ -44,6 +44,46 @@ export async function getPosts(): Promise<PostSummary[]> {
   return res.json();
 }
 
+import { fetchPostFromGitHub } from "@/lib/github";
+
+export async function getPostBySlug(slug: string) {
+  console.log("🔍 Buscando slug:", slug);
+  console.log(
+    "🔗 URL tentativa:",
+    `https://raw.githubusercontent.com/hericmendes/git-posts/main/posts/${slug}.md`
+  );
+
+  try {
+    const content = await fetchPostFromGitHub(slug);
+    const [meta, ...bodyLines] = content.split("---\n").slice(1);
+    const metaLines = meta.split("\n").filter(Boolean);
+
+    const metadata: Record<string, string> = {};
+    for (const line of metaLines) {
+      const [key, ...rest] = line.split(":");
+      metadata[key.trim()] = rest.join(":").trim();
+    }
+
+    const sanitize = (val?: string) =>
+      val?.trim().replace(/^["']+|["']+$/g, "") ?? "";
+
+    return {
+      slug,
+      title: sanitize(metadata.title),
+      author: sanitize(metadata.author),
+      category: sanitize(metadata.category),
+      content: bodyLines.join("---\n").trim(),
+    };
+  } catch (error) {
+    console.error("Erro ao buscar post:", error);
+    console.log("❌ Post não encontrado no GitHub: ", slug);
+    console.log("❌ Verifique se o slug está correto.");
+    return null;
+  }
+}
+
+
+
 
 
 export async function deletePost(slug: string) {

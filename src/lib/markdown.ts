@@ -2,5 +2,11 @@
 import matter from 'gray-matter'
 
 export function createMarkdown(frontmatter: Record<string, any>, content: string) {
-  return matter.stringify(content, frontmatter)
+  const clean = Object.fromEntries(
+    Object.entries(frontmatter).map(([k, v]) => [
+      k,
+      typeof v === "string" ? v.replace(/^['"]+|['"]+$/g, "") : v,
+    ])
+  );
+  return matter.stringify(content, clean);
 }

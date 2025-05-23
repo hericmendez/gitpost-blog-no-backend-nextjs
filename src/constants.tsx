@@ -9,7 +9,7 @@ export const SIDENAV_ITEMS: SideNavItem[] = [
   },
   {
     title: "Editor",
-    path: "/editor",
+    path: "/editor/new",
     icon: <Icon icon="lucide:edit" width="24" height="24" />,
   },
   {

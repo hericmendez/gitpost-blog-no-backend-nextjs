@@ -1,0 +1,81 @@
+gitpost-structure/
+    ├── .env
+    ├── .eslintrc.json
+    ├── .gitignore
+    ├── README.md
+    ├── generate-tree.js
+    ├── gitpost-structure_tree.txt
+    ├── next-env.d.ts
+    ├── next.config.mjs
+    ├── package-lock.json
+    ├── package.json
+    ├── pnpm-lock.yaml
+    ├── postcss.config.mjs
+    ├── src/
+    │   ├── 1.ts
+    │   ├── app/
+    │   │   ├── (app)/
+    │   │   │   ├── editor/
+    │   │   │   │   ├── [slug]/
+    │   │   │   │   │   └── page.tsx
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── layout.tsx
+    │   │   │   ├── page.tsx
+    │   │   │   └── posts/
+    │   │   │       └── page.tsx
+    │   │   ├── (auth)/
+    │   │   │   ├── login/
+    │   │   │   │   └── page.tsx
+    │   │   │   └── register/
+    │   │   │       └── page.tsx
+    │   │   ├── api/
+    │   │   │   ├── auth/
+    │   │   │   │   └── [...nextauth]/
+    │   │   │   │       └── route.ts
+    │   │   │   ├── post/
+    │   │   │   │   └── [slug]/
+    │   │   │   │       └── route.ts
+    │   │   │   └── posts/
+    │   │   │       ├── [slug]/
+    │   │   │       │   └── route.ts
+    │   │   │       ├── github/
+    │   │   │       │   └── route.ts
+    │   │   │       └── route.ts
+    │   │   ├── favicon.ico
+    │   │   └── layout.tsx
+    │   ├── components/
+    │   │   ├── LayoutElements/
+    │   │   │   ├── Header.tsx
+    │   │   │   ├── HeaderMobile.tsx
+    │   │   │   ├── LogoutButton.tsx
+    │   │   │   ├── MarginWidthWrapper.tsx
+    │   │   │   ├── PageWrapper.tsx
+    │   │   │   ├── SideNav.tsx
+    │   │   │   └── ThemeToggle.tsx
+    │   │   └── PostElements/
+    │   │       ├── MarkdownPreview.tsx
+    │   │       ├── PostCard.tsx
+    │   │       └── PostEditor.tsx
+    │   ├── constants.tsx
+    │   ├── context/
+    │   │   ├── AuthContext.tsx
+    │   │   ├── ThemeContext.tsx
+    │   │   └── ThemeLoader.tsx
+    │   ├── features/
+    │   │   └── posts/
+    │   │       ├── PostDashboard.tsx
+    │   │       └── postService.ts
+    │   ├── hooks/
+    │   │   └── useScroll.tsx
+    │   ├── lib/
+    │   │   ├── github.ts
+    │   │   ├── markdown.ts
+    │   │   ├── slugify.ts
+    │   │   └── utils.tsx
+    │   ├── styles/
+    │   │   └── globals.css
+    │   ├── types/
+    │   │   ├── post.ts
+    │   │   └── user.ts
+    │   └── types.tsx
+    └── tsconfig.json

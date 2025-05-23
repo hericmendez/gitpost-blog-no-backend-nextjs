@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/hericmendez/git-posts/main/posts/bolacha-20_2025-05-23T20-13-46-405Z.md ==> funciona
+https://raw.githubusercontent.com/hericmendes/git-posts/main/posts/bolacha-20_2025-05-23T20-13-46-405Z.md ==> Não funciona, meu login é 'hericmendez' com Z e não 'hericmendes'
