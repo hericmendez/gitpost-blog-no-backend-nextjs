@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
-import { commitPostToGitHub } from "@/lib/github";
 
-const TOKEN = "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";
-const OWNER = "hericmendez";
-const REPO = "git-posts";
-const BRANCH = "main";
+const TOKEN = process.env.GITHUB_APP_TOKEN;
+const OWNER = process.env.GITHUB_OWNER;
+const REPO = process.env.GITHUB_REPO;
+const BRANCH = process.env.GITHUB_BRANCH || "main";
+if (!TOKEN || !OWNER || !REPO) {
+  throw new Error(
+    "GITHUB_APP_TOKEN, GITHUB_OWNER, and GITHUB_REPO must be set"
+  );
+}
 
 const octokit = new Octokit({ auth: TOKEN });
 
@@ -18,8 +22,8 @@ export async function DELETE(
 
   try {
     const { data } = await octokit.rest.repos.getContent({
-      owner: OWNER,
-      repo: REPO,
+      owner: OWNER!,
+      repo: REPO!,
       path: filePath,
       ref: BRANCH,
     });
@@ -30,8 +34,8 @@ export async function DELETE(
     console.log("DELETING FILE: ", filePath);
 
     const response = await octokit.repos.deleteFile({
-      owner: OWNER,
-      repo: REPO,
+      owner: OWNER!,
+      repo: REPO!,
       path: filePath,
       message: `Delete post ${slug}`,
       sha: sha,

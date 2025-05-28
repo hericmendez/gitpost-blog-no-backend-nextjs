@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { ReactNode, FC } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { SessionProvider } from "next-auth/react";
 
 const AppLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const router = useRouter();
@@ -26,18 +27,20 @@ const AppLayout: FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, []); */
   return (
-    <ThemeProvider>
-      <div className="flex">
-        <SideNav />
-        <main className="flex-1">
-          <MarginWidthWrapper>
-            <Header />
-            <HeaderMobile />
-            <PageWrapper>{children}</PageWrapper>
-          </MarginWidthWrapper>
-        </main>
-      </div>
-    </ThemeProvider>
+    <SessionProvider>
+      <ThemeProvider>
+        <div className="flex">
+          <SideNav />
+          <main className="flex-1">
+            <MarginWidthWrapper>
+              <Header />
+              <HeaderMobile />
+              <PageWrapper>{children}</PageWrapper>
+            </MarginWidthWrapper>
+          </main>
+        </div>
+      </ThemeProvider>{" "}
+    </SessionProvider>
   );
 };
 

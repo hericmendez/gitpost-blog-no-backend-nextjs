@@ -1,15 +1,9 @@
 import React from "react";
-import { useRouter } from "next/navigation";
 
+import { signOut } from "next-auth/react";
 const LogoutButton = () => {
-  const router = useRouter();
-
   const handleLogout = () => {
-    // Remove o token do localStorage
-    localStorage.removeItem("session");
-
-    // Redireciona para a página de login
-    router.push("/login");
+    signOut({ callbackUrl: "/login" });
   };
 
   return (

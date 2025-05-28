@@ -1,5 +1,11 @@
 "use client"
+
+import { useSessionUser } from "@/hooks/useSessionUser";
+
 export default function Home() {
+  const { username, user } = useSessionUser();
+  console.log("user ==> ", username);
+
   return (
     <>
       <div className="p-2 overflow-y-auto">
