@@ -1,9 +1,9 @@
 // src/app/api/posts/github/route.ts
 import { NextResponse } from 'next/server'
 import { Octokit } from '@octokit/rest'
-import slugify, { generateSafeSlug } from "@/lib/slugify";
+import { generateSafeSlug } from "@/lib/slugify";
 import { createMarkdown } from "@/lib/markdown";
-import { useSessionUser } from "@/hooks/useSessionUser";
+
 const TOKEN = process.env.GITHUB_APP_TOKEN;
 const REPO_OWNER = process.env.GITHUB_REPO_OWNER;
 const REPO_NAME = process.env.GITHUB_REPO_NAME;

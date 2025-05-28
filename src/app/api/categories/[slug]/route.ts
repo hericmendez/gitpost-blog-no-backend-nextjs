@@ -1,15 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 const TOKEN = process.env.GITHUB_APP_TOKEN!;
 const REPO_OWNER: string = process.env.GITHUB_REPO_OWNER || "";
 const REPO_NAME: string = process.env.GITHUB_REPO_NAME || "";
 const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
 const DIR = "posts";
+if (!TOKEN || !REPO_NAME || !REPO_OWNER) {
+  throw new Error(
+    "GITHUB_APP_TOKEN, GITHUB_OWNER, and GITHUB_REPO must be set"
+  );
+}
+const octokit = new Octokit({ auth: TOKEN });
 
-const octokit = new Octokit({ auth: TOKEN }); // Não autenticado
 interface PostMeta {
   slug: string;
   title: string;
@@ -20,14 +23,18 @@ interface PostMeta {
   content?: string;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { slug: string } }
+) {
+  const categorySlug = params.slug.toLowerCase();
+
   try {
     const url = new URL(request.url);
     const search = url.searchParams.get("search")?.toLowerCase() || "";
     const sort = url.searchParams.get("sort") || "desc";
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "10");
-    const categoryFilter = url.searchParams.get("category")?.toLowerCase();
 
     const { data } = await octokit.repos.getContent({
       owner: REPO_OWNER,
@@ -80,9 +87,8 @@ export async function GET(request: NextRequest) {
 
     const filtered = posts.filter((post) => {
       const matchTitle = post.title.toLowerCase().includes(search);
-      const matchCategory = categoryFilter
-        ? post.category?.toLowerCase() === categoryFilter
-        : true;
+      const matchCategory =
+        post.category?.toLowerCase() === categorySlug;
       return matchTitle && matchCategory;
     });
 
@@ -104,7 +110,7 @@ export async function GET(request: NextRequest) {
       totalPages,
     });
   } catch (err: any) {
-    console.error("Erro ao buscar posts:", err);
+    console.error("Erro ao buscar posts da categoria:", err);
     return NextResponse.json(
       { success: false, error: err.message },
       { status: 500 }
