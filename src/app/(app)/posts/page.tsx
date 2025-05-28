@@ -20,13 +20,13 @@ export default function PostsPage() {
 
   return (
     <div className="p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {data.map((post) => (
+      {data.posts.map((post) => (
         <div key={post.slug} className="space-y-2">
           <PostCard
-            title={post.frontmatter.title}
-            description={post.frontmatter.category}
+            title={post.title}
+            description={post.category}
             slug={post.slug}
-            date={post.frontmatter.date}
+            date={post.date}
           />
           <Link href={`/editor/${post.slug}`}>
             <button className="px-3 py-1 bg-yellow-300 text-black rounded hover:bg-red-500 text-sm mr-4">

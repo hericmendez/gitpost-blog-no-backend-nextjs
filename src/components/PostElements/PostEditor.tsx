@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import MarkdownPreview from "./MarkdownPreview";
 import { createPost, deletePost } from "@/features/posts/postService";
+import ImageUploader from "./ImageUploader"; // ajuste o path se necessário
 
 type PostEditorProps = {
   mode?: "create" | "edit";
@@ -111,10 +112,33 @@ export default function PostEditor({
     const txt = prompt("Texto do link:", "meu link") || "";
     if (url) insertAtCursor(`[${txt}](${url})`);
   };
-  const handleImage = () => {
+  const handleImageLink = () => {
     const url = prompt("URL da imagem:");
     const alt = prompt("Texto alternativo:", "") || "";
     if (url) insertAtCursor(`![${alt}](${url})`);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("/api/upload-image", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      insertAtCursor(`![imagem](${data.url})`);
+    } else {
+      alert("Erro ao enviar imagem: " + data.error);
+    }
+
+    // Limpa o input pra permitir novo upload do mesmo arquivo se quiser
+    e.target.value = "";
   };
 
   return (
@@ -145,7 +169,6 @@ export default function PostEditor({
               disabled={mode === "edit"}
             />
           </div>
-
           <div className="flex flex-wrap gap-2 text-sm border-1 p-2 my-2 rounded-sm">
             <div className="relative group">
               <button className="px-2 py-1 bg-zinc-700 rounded text-white">
@@ -168,12 +191,23 @@ export default function PostEditor({
             <ToolbarBtn label="<>​" onClick={handleCode} />
             <ToolbarBtn label="• Lista" onClick={handleList} />
             <ToolbarBtn label="❝ Quote" onClick={handleQuote} />
-            <ToolbarBtn label="🔗 Link" onClick={handleLink} />
-            <ToolbarBtn label="🖼️ Imagem" onClick={handleImage} />
             <ToolbarBtn label="↵ Line" onClick={handleLine} />
             <ToolbarBtn label="⇥ Indent" onClick={handleIndent} />
-          </div>
+            <ToolbarBtn label="🔗 Link" onClick={handleLink} />
+            <ToolbarBtn label="🔗🖼️ Image Link" onClick={handleImageLink} />
+            <ToolbarBtn label="🖼️ Link" onClick={handleImageLink} />
 
+            <label className="px-2 py-1 bg-zinc-700 rounded text-white hover:bg-zinc-600 cursor-pointer">
+              🖼️ Upload
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+          ⬆️
           <textarea
             id="md-editor"
             className="w-full h-[50dvh] border rounded p-2 bg-zinc-900 text-white font-mono"

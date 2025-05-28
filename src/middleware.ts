@@ -7,7 +7,8 @@ export function middleware(request: NextRequest) {
     pathname === "/register" ||
     pathname.startsWith("/api/posts") ||
     pathname.startsWith("/api/categories") ||
-    pathname.startsWith("/api/docs"); 
+    pathname.startsWith("/api/docs") ||
+    pathname.startsWith("/api/upload-image");
 
 
 
