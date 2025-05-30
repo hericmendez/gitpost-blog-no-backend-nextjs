@@ -1,20 +1,22 @@
-import PostEditor from '@/components/PostElements/PostEditor'
-import { getPostBySlug } from '@/features/posts/postService'
-import { notFound } from 'next/navigation'
+"use client";
+import PostEditor from "@/components/PostElements/PostEditor";
+import { getPostBySlug } from "@/features/posts/postService";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: {
-    slug: string
-  }
-}
+    slug: string;
+  };
+};
 
 export default async function EditPostPage({ params }: PageProps) {
-  const { slug } = params
-
-  const post = await getPostBySlug(slug)
+  const { slug } = params;
+  const owner = localStorage.getItem("git_owner");
+  console.log("owner ==> ", owner);
+  const post = await getPostBySlug(slug);
   console.log("post in editor/[slug]/page.tsx ==> ", post);
 
-  if (!post) return notFound()
+  if (!post) return notFound();
 
   return (
     <PostEditor
@@ -25,5 +27,5 @@ export default async function EditPostPage({ params }: PageProps) {
       initialCategory={post.category}
       initialContent={post.content}
     />
-  )
+  );
 }

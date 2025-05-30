@@ -1,8 +1,7 @@
 // src/hooks/useSessionUser.ts
 "use client"
-import { useSession } from "next-auth/react"
-import { Session } from "next-auth"
-
+import { useSession } from "next-auth/react";
+ 
 // Extend Session type to include accessToken if needed
 declare module "next-auth" {
   interface Session {

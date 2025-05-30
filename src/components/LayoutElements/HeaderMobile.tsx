@@ -214,8 +214,7 @@ export default function HeaderMobile() {
           );
         })}
       </motion.ul>
-      <div className="pointer-events-auto absolute right-4 top-[5px] z-30">
-        <ThemeToggle />
+      <div className="pointer-events-auto absolute left-4 top-[5px] z-30">
         <MenuToggle toggle={toggleOpen} />
       </div>
     </motion.nav>

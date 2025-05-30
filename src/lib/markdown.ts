@@ -10,3 +10,17 @@ export function createMarkdown(frontmatter: Record<string, any>, content: string
   );
   return matter.stringify(content, clean);
 }
+
+export function parseMarkdownFile(content: string, slug: string) {
+  const { data, content: rawContent } = matter(content);
+
+  return {
+    slug,
+    title: data.title || "Sem título",
+    date: data.date || new Date().toISOString(),
+    author: data.author || "Desconhecido",
+    category: data.category || "Sem categoria",
+    content: rawContent,
+    excerpt: rawContent.split("\n").slice(0, 2).join(" "),
+  };
+}

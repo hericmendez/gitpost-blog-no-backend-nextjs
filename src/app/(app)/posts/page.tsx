@@ -20,7 +20,7 @@ export default function PostsPage() {
 
   return (
     <div className="p-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {data.posts.map((post) => (
+      {data.map((post) => (
         <div key={post.slug} className="space-y-2">
           <PostCard
             title={post.title}

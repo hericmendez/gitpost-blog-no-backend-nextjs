@@ -100,6 +100,7 @@ export default function PostEditor({
 
   const handleHeader = (level: number) =>
     insertAtCursor("#".repeat(level) + " ");
+
   const handleBold = () => insertAtCursor("**", "**");
   const handleItalic = () => insertAtCursor("_", "_");
   const handleCode = () => insertAtCursor("`", "`");
@@ -142,27 +143,27 @@ export default function PostEditor({
   };
 
   return (
-    <div className="flex flex-col justify-center p-6">
+    <div className="flex flex-col justify-center p-6 bg-gray-100 dark:bg-zinc-900 transition-colors duration-1000">
       <div className="grid lg:grid-cols-2 gap-6 overflow-hidden">
         {/* EDIÇÃO */}
         <div>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 transition-colors duration-1000">
             <input
-              className="p-2 border rounded bg-zinc-800 text-white"
+              className="p-2 border rounded  transition-colors duration-1000 bg-gray-300 dark:bg-zinc-800 text-black dark:text-white "
               placeholder="Título"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               disabled={mode === "edit"}
             />
             <input
-              className="p-2 border rounded bg-zinc-800 text-white"
+              className="p-2 border rounded transition-colors duration-1000 bg-gray-300 dark:bg-zinc-800 text-black dark:text-white"
               placeholder="Autor"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               disabled={mode === "edit"}
             />
             <input
-              className="p-2 border rounded bg-zinc-800 text-white"
+              className="p-2 border rounded transition-colors duration-1000 bg-gray-300 dark:bg-zinc-800 text-black dark:text-white"
               placeholder="Categoria"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -171,20 +172,20 @@ export default function PostEditor({
           </div>
           <div className="flex flex-wrap gap-2 text-sm border-1 p-2 my-2 rounded-sm">
             <div className="relative group">
-              <button className="px-2 py-1 bg-zinc-700 rounded text-white">
-                Títulos ▼
-              </button>
-              <div className="absolute hidden group-hover:flex flex-col bg-zinc-800 text-white mt-1 rounded z-10">
+              <select
+                onChange={(e) => handleHeader(Number(e.target.value))}
+                className="bg-gray-300 dark:bg-zinc-700 text-black dark:text-white px-3 py-1 rounded"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  Títulos
+                </option>
                 {[1, 2, 3, 4, 5, 6].map((lvl) => (
-                  <button
-                    key={lvl}
-                    onClick={() => handleHeader(lvl)}
-                    className="px-3 py-1 hover:bg-zinc-700 text-left"
-                  >
+                  <option key={lvl} value={lvl}>
                     H{lvl}
-                  </button>
+                  </option>
                 ))}
-              </div>
+              </select>
             </div>
             <ToolbarBtn label="B" onClick={handleBold} />
             <ToolbarBtn label="I" onClick={handleItalic} />
@@ -195,10 +196,8 @@ export default function PostEditor({
             <ToolbarBtn label="⇥ Indent" onClick={handleIndent} />
             <ToolbarBtn label="🔗 Link" onClick={handleLink} />
             <ToolbarBtn label="🔗🖼️ Image Link" onClick={handleImageLink} />
-            <ToolbarBtn label="🖼️ Link" onClick={handleImageLink} />
-
-            <label className="px-2 py-1 bg-zinc-700 rounded text-white hover:bg-zinc-600 cursor-pointer">
-              🖼️ Upload
+            <label className="px-2 py-1 bg-pastel-blue dark:bg-zinc-700 rounded text-black dark:text-white hover:bg-blue-400 dark:hover:bg-zinc-600 cursor-pointer">
+              ⬆️🖼️ Image Upload
               <input
                 type="file"
                 accept="image/*"
@@ -207,10 +206,10 @@ export default function PostEditor({
               />
             </label>
           </div>
-          ⬆️
+
           <textarea
             id="md-editor"
-            className="w-full h-[50dvh] border rounded p-2 bg-zinc-900 text-white font-mono"
+            className="w-full h-[50dvh] border rounded p-2 transition-colors duration-1000 bg-gray-300 dark:bg-zinc-800 text-black dark:text-white font-mono"
             placeholder="Digite seu conteúdo em Markdown..."
             value={md}
             onChange={(e) => setMd(e.target.value)}
@@ -243,7 +242,7 @@ function ToolbarBtn({
   return (
     <button
       onClick={onClick}
-      className="px-2 py-1 bg-zinc-700 rounded text-white hover:bg-zinc-600"
+      className="px-2 py-1 transition-colors duration-1000 bg-pastel-blue dark:bg-zinc-700 rounded text-black dark:text-white hover:bg-blue-400 dark:hover:bg-zinc-600 cursor-pointer"
     >
       {label}
     </button>

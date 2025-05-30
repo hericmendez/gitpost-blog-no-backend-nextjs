@@ -1,56 +1,58 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
-const TOKEN = process.env.GITHUB_APP_TOKEN;
-const OWNER = process.env.GITHUB_OWNER;
-const REPO = process.env.GITHUB_REPO;
-const BRANCH = process.env.GITHUB_BRANCH || "main";
-if (!TOKEN || !OWNER || !REPO) {
-  throw new Error(
-    "GITHUB_APP_TOKEN, GITHUB_OWNER, and GITHUB_REPO must be set"
-  );
-}
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const TOKEN = process.env.GITHUB_APP_TOKEN!;
+const REPO_OWNER: string = process.env.GITHUB_REPO_OWNER || "";
+const REPO_NAME: string = process.env.GITHUB_REPO_NAME || "";
+const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
+const DIR = "posts";
 
 const octokit = new Octokit({ auth: TOKEN });
 
-export async function DELETE(
-  request: Request,
+export async function GET(
+  _req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   const slug = params.slug;
-  const filePath = `posts/${slug}.md`;
+  if (!slug)
+    return NextResponse.json(
+      { success: false, error: "Slug não fornecido." },
+      { status: 400 }
+    );
 
   try {
-    const { data } = await octokit.rest.repos.getContent({
-      owner: OWNER!,
-      repo: REPO!,
-      path: filePath,
+    const res = await octokit.repos.getContent({
+      owner: REPO_OWNER,
+      repo: REPO_NAME,
+      path: `${DIR}/${slug}.md`,
       ref: BRANCH,
     });
 
-    const sha = (data as any).sha;
+    const content = Buffer.from((res.data as any).content, "base64").toString(
+      "utf-8"
+    );
 
-    console.log("SHA ==> ", sha);
-    console.log("DELETING FILE: ", filePath);
+    const frontmatterMatch = content.match(/---\n([\s\S]*?)\n---/);
+    const meta: any = { slug, title: slug, date: "", content };
 
-    const response = await octokit.repos.deleteFile({
-      owner: OWNER!,
-      repo: REPO!,
-      path: filePath,
-      message: `Delete post ${slug}`,
-      sha: sha,
-      branch: BRANCH,
-    });
+    if (frontmatterMatch) {
+      frontmatterMatch[1].split("\n").forEach((line: string) => {
+        const [key, ...rest] = line.split(":");
+        if (!key || !rest) return;
+        const value = rest.join(":").trim();
+        meta[key.trim()] = value.replace(/^['"]|['"]$/g, "");
+      });
+    }
 
-    console.log("DELETE SUCCESS:", response.status);
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json(meta);
   } catch (err: any) {
-    console.error("Erro ao deletar:", err);
+    console.error("Erro ao buscar post:", err);
     return NextResponse.json(
       { success: false, error: err.message },
       { status: 500 }
     );
   }
 }
-

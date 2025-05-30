@@ -8,24 +8,10 @@ import MarginWidthWrapper from "@/components/LayoutElements/MarginWidthWrapper";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ReactNode, FC } from "react";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+
 import { SessionProvider } from "next-auth/react";
 
 const AppLayout: FC<{ children: ReactNode }> = ({ children }) => {
-  const router = useRouter();
-  /* 
-  useEffect(() => {
-    const token = localStorage.getItem("session");
-
-    if (!token) {
-      console.log("Token ausente. Redirecionando para login.");
-      router.push("/login");
-    } else {
-      console.log("Token encontrado. Acesso permitido.");
-      // Adicione lógica de validação adicional, se necessário
-    }
-  }, []); */
   return (
     <SessionProvider>
       <ThemeProvider>

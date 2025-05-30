@@ -1,5 +1,8 @@
 // src/features/posts/postService.ts
 export const dynamic = "force-dynamic";
+
+import { fetchPostFromGitHub } from "@/lib/github";
+import { parseMarkdownFile } from "@/lib/markdown";
 export interface CreatePostParams {
   title: string;
   author: string;
@@ -35,23 +38,46 @@ export interface PostSummary {
   };
 }
 
+// src/lib/github/getPosts.ts
 export async function getPosts(): Promise<PostSummary[]> {
-  const res = await fetch(`/api/posts?ts=${Date.now()}`, {
-    cache: "no-store",
-  });
+  const owner =
+    typeof window !== "undefined" ? localStorage.getItem("git-owner") : null;
 
-  if (!res.ok) throw new Error("Erro ao carregar os posts");
-  return res.json();
+  if (!owner) {
+    throw new Error("Nome do repositório não encontrado. Usuário não logado?");
+  }
+
+  const repo = `${owner}/git-posts`;
+
+  const res = await fetch(
+    `https://api.github.com/repos/${repo}/contents/posts`,
+    {
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+      },
+      cache: "no-store",
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error(`Erro ao buscar posts: ${res.status}`);
+  }
+
+  const files = await res.json();
+
+  const posts = await Promise.all(
+    files.map(async (file: any) => {
+      const raw = await fetch(file.download_url);
+      const content = await raw.text();
+      return parseMarkdownFile(content, file.name.replace(".md", ""));
+    })
+  );
+
+  return posts;
 }
-
-import { fetchPostFromGitHub } from "@/lib/github";
 
 export async function getPostBySlug(slug: string) {
   console.log("🔍 Buscando slug:", slug);
-  console.log(
-    "🔗 URL tentativa:",
-    `https://raw.githubusercontent.com/hericmendes/git-posts/main/posts/${slug}.md`
-  );
 
   try {
     const content = await fetchPostFromGitHub(slug);
