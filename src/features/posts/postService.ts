@@ -1,6 +1,6 @@
 export const dynamic = "force-dynamic";
-//  const TOKEN = "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"; //TOKEN DA GIGI
-const TOKEN: string = process.env.GITHUB_APP_TOKEN!; //'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'; //TOKEN
+
+const TOKEN: string = process.env.GITHUB_APP_TOKEN!; 
   import { fetchPostFromGitHub } from "@/lib/github";
   import { parseMarkdownFile } from "@/lib/markdown";
   console.log("TOKEN ==> ", TOKEN);
