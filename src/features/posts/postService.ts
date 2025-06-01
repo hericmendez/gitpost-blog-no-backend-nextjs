@@ -1,34 +1,41 @@
-// src/features/posts/postService.ts
 export const dynamic = "force-dynamic";
 
 import { fetchPostFromGitHub } from "@/lib/github";
 import { parseMarkdownFile } from "@/lib/markdown";
+
 export interface CreatePostParams {
   title: string;
   author: string;
   category: string;
   content: string;
+  owner: string;
 }
 
-export interface PostFrontmatter {
-  title: string;
-  author?: string;
-  category?: string;
-  date: string;
+// Helper para recuperar o `owner` atual
+function getGitOwner() {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("git-owner");
 }
 
 export async function createPost(params: CreatePostParams) {
-  const res = await fetch("/api/posts/github", {
+  const owner = getGitOwner();
+  console.log("owner ==> ", owner);
+  if (!owner) throw new Error("Usuário não logado.");
+
+  const res = await fetch(`/api/posts/github`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
   });
+
   if (!res.ok) {
     const json = await res.text();
     throw new Error(`API error ${res.status}: ${json}`);
   }
+
   return res.json();
 }
+
 export interface PostSummary {
   slug: string;
   frontmatter: {
@@ -40,12 +47,8 @@ export interface PostSummary {
 
 // src/lib/github/getPosts.ts
 export async function getPosts(): Promise<PostSummary[]> {
-  const owner =
-    typeof window !== "undefined" ? localStorage.getItem("git-owner") : null;
-
-  if (!owner) {
-    throw new Error("Nome do repositório não encontrado. Usuário não logado?");
-  }
+  const owner = getGitOwner();
+  if (!owner) throw new Error("Usuário não logado.");
 
   const repo = `${owner}/git-posts`;
 
@@ -78,7 +81,6 @@ export async function getPosts(): Promise<PostSummary[]> {
 
 export async function getPostBySlug(slug: string) {
   console.log("🔍 Buscando slug:", slug);
-
   try {
     const content = await fetchPostFromGitHub(slug);
     const [meta, ...bodyLines] = content.split("---\n").slice(1);
@@ -103,17 +105,15 @@ export async function getPostBySlug(slug: string) {
   } catch (error) {
     console.error("Erro ao buscar post:", error);
     console.log("❌ Post não encontrado no GitHub: ", slug);
-    console.log("❌ Verifique se o slug está correto.");
     return null;
   }
 }
 
-
-
-
-
 export async function deletePost(slug: string) {
-  const res = await fetch(`/api/posts/${slug}`, {
+  const owner = getGitOwner();
+  if (!owner) throw new Error("Usuário não logado.");
+
+  const res = await fetch(`/api/posts/${slug}?owner=${owner}`, {
     method: "DELETE",
     cache: "no-store",
   });

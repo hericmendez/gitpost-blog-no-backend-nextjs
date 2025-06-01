@@ -56,7 +56,10 @@ const createRepoIfMissing = async (
   }
 };
 
-const handler = NextAuth({
+
+
+// 👇 Aqui você declara e exporta o objeto de opções
+export const authOptions: NextAuthOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
@@ -83,24 +86,20 @@ const handler = NextAuth({
 
       return true;
     },
-
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
       session.username = token.username as string;
       return session;
     },
-
     async jwt({ token, account, profile }) {
       if (account?.access_token) token.accessToken = account.access_token;
       if (profile?.login) token.username = profile.login;
       return token;
     },
-
     async redirect({ baseUrl }) {
       return baseUrl;
     },
   },
-
   cookies: {
     pkceCodeVerifier: {
       name: "next-auth.pkce.code_verifier",
@@ -111,6 +110,9 @@ const handler = NextAuth({
       options: { maxAge: 60 * 60 * 24 },
     },
   },
-} as NextAuthOptions);
+};
+
+// 👇 Aqui reaproveita esse objeto no handler
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

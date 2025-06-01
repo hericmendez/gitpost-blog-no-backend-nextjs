@@ -12,6 +12,7 @@ type PostEditorProps = {
   initialCategory?: string;
   initialContent?: string;
   slug?: string;
+  owner: string; // Adicionei owner aqui, se necessário
 };
 
 export default function PostEditor({
@@ -21,6 +22,7 @@ export default function PostEditor({
   initialCategory = "",
   initialContent = "",
   slug,
+  owner,
 }: PostEditorProps) {
   const [title, setTitle] = useState(initialTitle);
   const [author, setAuthor] = useState(initialAuthor);
@@ -46,6 +48,7 @@ export default function PostEditor({
         author,
         category,
         content: md,
+        owner,
       });
 
       if (!result.success) {
@@ -70,6 +73,7 @@ export default function PostEditor({
         author,
         category,
         content: md,
+        owner,
       });
       if (result.success) {
         alert("Post salvo com sucesso: " + result.slug);

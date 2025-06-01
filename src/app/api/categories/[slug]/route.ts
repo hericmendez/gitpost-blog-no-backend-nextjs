@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
 const TOKEN = process.env.GITHUB_APP_TOKEN!;
-const REPO_OWNER: string = process.env.GITHUB_REPO_OWNER || "";
+
 const REPO_NAME: string = process.env.GITHUB_REPO_NAME || "";
 const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
 const DIR = "posts";
-if (!TOKEN || !REPO_NAME || !REPO_OWNER) {
+if (!TOKEN || !REPO_NAME) {
   throw new Error(
     "GITHUB_APP_TOKEN, GITHUB_OWNER, and GITHUB_REPO must be set"
   );
@@ -33,11 +33,23 @@ export async function GET(
     const url = new URL(request.url);
     const search = url.searchParams.get("search")?.toLowerCase() || "";
     const sort = url.searchParams.get("sort") || "desc";
+    const owner = url.searchParams.get("owner");
+
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "10");
 
+    if (!owner) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Parâmetro 'owner' é obrigatório.",
+        },
+        { status: 400 }
+      );
+    }
+
     const { data } = await octokit.repos.getContent({
-      owner: REPO_OWNER,
+      owner,
       repo: REPO_NAME,
       path: DIR,
       ref: BRANCH,
@@ -50,7 +62,7 @@ export async function GET(
         const slug = file.name.replace(".md", "");
 
         const res = await octokit.repos.getContent({
-          owner: REPO_OWNER,
+          owner,
           repo: REPO_NAME,
           path: `${DIR}/${file.name}`,
           ref: BRANCH,
@@ -87,8 +99,7 @@ export async function GET(
 
     const filtered = posts.filter((post) => {
       const matchTitle = post.title.toLowerCase().includes(search);
-      const matchCategory =
-        post.category?.toLowerCase() === categorySlug;
+      const matchCategory = post.category?.toLowerCase() === categorySlug;
       return matchTitle && matchCategory;
     });
 

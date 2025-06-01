@@ -16,12 +16,13 @@ export default async function EditPostPage({ params }: PageProps) {
   const post = await getPostBySlug(slug);
   console.log("post in editor/[slug]/page.tsx ==> ", post);
 
-  if (!post) return notFound();
+  if (!post || !owner) return notFound();
 
   return (
     <PostEditor
       mode="edit"
       slug={slug}
+      owner={owner}
       initialTitle={post.title}
       initialAuthor={post.author}
       initialCategory={post.category}

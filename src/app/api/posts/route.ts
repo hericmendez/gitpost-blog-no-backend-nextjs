@@ -6,12 +6,11 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const TOKEN: string = process.env.GITHUB_APP_TOKEN!;
-const REPO_OWNER: string = process.env.GITHUB_REPO_OWNER!;
 const REPO_NAME: string = process.env.GITHUB_REPO_NAME!;
 const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
 const DIR = "posts";
 
-if (!TOKEN || !REPO_OWNER || !REPO_NAME) {
+if (!TOKEN || !REPO_NAME) {
   throw new Error("Missing required GitHub environment variables.");
 }
 
@@ -35,9 +34,15 @@ export async function GET(request: NextRequest) {
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = parseInt(url.searchParams.get("limit") || "10");
     const categoryFilter = url.searchParams.get("category")?.toLowerCase();
-
+    const owner = url.searchParams.get("owner");
+    if (!owner) {
+      return NextResponse.json(
+        { success: false, error: "Parâmetro 'owner' ausente na query" },
+        { status: 400 }
+      );
+    }
     const { data } = await octokit.repos.getContent({
-      owner: REPO_OWNER,
+      owner: owner,
       repo: REPO_NAME,
       path: DIR,
       ref: BRANCH,
@@ -50,7 +55,7 @@ export async function GET(request: NextRequest) {
         const slug = file.name.replace(".md", "");
 
         const res = await octokit.repos.getContent({
-          owner: REPO_OWNER,
+          owner: owner,
           repo: REPO_NAME,
           path: `${DIR}/${file.name}`,
           ref: BRANCH,
@@ -130,7 +135,14 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
+    const url = new URL(req.url);
+    const owner = url.searchParams.get("owner");
+    if (!owner) {
+      return NextResponse.json(
+        { success: false, error: "Parâmetro 'owner' ausente na query" },
+        { status: 400 }
+      );
+    }
     const date = new Date().toISOString();
     const safeTitle = title
       .toLowerCase()
@@ -142,7 +154,7 @@ export async function POST(req: NextRequest) {
     const frontmatter = `---\ntitle: ${title}\ndate: ${date}\nauthor: ${author}\ncategory: ${category}\n---\n\n`;
 
     await octokit.repos.createOrUpdateFileContents({
-      owner: REPO_OWNER,
+      owner: owner,
       repo: REPO_NAME,
       path: filePath,
       message: `Add new post: ${title}`,

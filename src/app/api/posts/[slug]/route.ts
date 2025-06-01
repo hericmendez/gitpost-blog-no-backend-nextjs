@@ -5,7 +5,6 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 const TOKEN = process.env.GITHUB_APP_TOKEN!;
-const REPO_OWNER: string = process.env.GITHUB_REPO_OWNER || "";
 const REPO_NAME: string = process.env.GITHUB_REPO_NAME || "";
 const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
 const DIR = "posts";
@@ -17,15 +16,19 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   const slug = params.slug;
-  if (!slug)
+  const url = new URL(_req.url);
+  const owner = url.searchParams.get("owner");
+
+  if (!slug || !owner) {
     return NextResponse.json(
-      { success: false, error: "Slug não fornecido." },
+      { success: false, error: "Slug e/ou owner ausentes." },
       { status: 400 }
     );
+  }
 
   try {
     const res = await octokit.repos.getContent({
-      owner: REPO_OWNER,
+      owner,
       repo: REPO_NAME,
       path: `${DIR}/${slug}.md`,
       ref: BRANCH,
@@ -56,3 +59,4 @@ export async function GET(
     );
   }
 }
+
