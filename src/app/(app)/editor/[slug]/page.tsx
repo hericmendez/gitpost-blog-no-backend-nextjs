@@ -12,9 +12,7 @@ type PageProps = {
 export default async function EditPostPage({ params }: PageProps) {
   const { slug } = params;
   const owner = localStorage.getItem("git_owner");
-  console.log("owner ==> ", owner);
   const post = await getPostBySlug(slug);
-  console.log("post in editor/[slug]/page.tsx ==> ", post);
 
   if (!post || !owner) return notFound();
 

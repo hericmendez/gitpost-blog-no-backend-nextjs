@@ -13,7 +13,6 @@ export default function PostsPage() {
 
   useEffect(() => {
     getPosts();
-    console.log("data useeffect ==> ", data);
   }, [data]);
   if (error) return <p className="p-4 text-red-500">Erro ao carregar posts</p>;
   if (!data) return <p className="p-4">Carregando...</p>;

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -60,3 +62,52 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { slug: string } }
+) {
+  const session = await getServerSession(authOptions);
+  const accessToken = session?.accessToken;
+  console.log("accessToken ==> ", accessToken);
+  const owner = session?.username;
+
+  if (!accessToken || !owner) {
+    return NextResponse.json(
+      { success: false, error: "Usuário não autenticado." },
+      { status: 401 }
+    );
+  }
+
+  const octokit = new Octokit({ auth: accessToken });
+  const slug = params.slug.replace(".md", "");
+
+  try {
+    // Primeiro pega o SHA do arquivo (necessário pro delete)
+    const { data } = await octokit.repos.getContent({
+      owner,
+      repo: REPO_NAME,
+      path: `${DIR}/${slug}.md`,
+      ref: BRANCH,
+    });
+
+    const sha = (data as any).sha;
+
+    // Agora deleta
+    await octokit.repos.deleteFile({
+      owner,
+      repo: REPO_NAME,
+      path: `${DIR}/${slug}.md`,
+      message: `Delete post ${slug}.md`,
+      sha,
+      branch: BRANCH,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    console.error("Erro ao deletar post:", err);
+    return NextResponse.json(
+      { success: false, error: err.message },
+      { status: 500 }
+    );
+  }
+}

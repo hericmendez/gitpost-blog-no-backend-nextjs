@@ -11,10 +11,9 @@ const HeaderDropdown: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, username } = useSessionUser();
 
-  console.log("user ==> ", { ...user, username });
+
   useEffect(() => {
     username && localStorage.setItem("git-owner", username);
-    console.log("username salvo no localstorage ==> ", username);
   }, [username]);
   const handleLogout = () => {
     localStorage.removeItem("git-owner");
