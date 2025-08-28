@@ -9,10 +9,18 @@ const nextConfig = {
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_APP_TOKEN: process.env.GITHUB_APP_TOKEN,
-    GITHUB_APP_TOKEN_READONLY: process.env.GITHUB_APP_TOKEN_READONLY,
-    GITHUB_APP_TOKEN_READONLY_GIGI: process.GITHUB_APP_TOKEN_READONLY_GIGI,
+
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

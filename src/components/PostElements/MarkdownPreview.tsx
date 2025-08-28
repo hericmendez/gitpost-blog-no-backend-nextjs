@@ -1,65 +1,82 @@
 // src/components/LayoutElements/MarkdownPreview.tsx
 'use client'
 
+import Image from 'next/image'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
 interface Props {
-  markdown: string
+  markdown: string, className?: string
 }
 
-export default function MarkdownPreview({ markdown }: Props) {
+export default function MarkdownPreview({ markdown, className }: Props) {
   return (
-    <div className="prose prose-lg lg:prose-xl dark:prose-invert max-w-none transition-colors duration-1000 dark:bg-zinc-800 bg-gray-300 p-6 border-2 border-gray-200rounded overflow-y-scroll">
+    <div className={`prose prose-lg lg:prose-xl dark:prose-invert max-w-none transition-colors duration-1000 ${className || ''}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ node, ...props }) => (
+          h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h1 className="text-4xl font-extrabold mt-4 mb-2" {...props} />
           ),
-          h2: ({ node, ...props }) => (
+          h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h2 className="text-3xl font-bold mt-4 mb-2" {...props} />
           ),
-          h3: ({ node, ...props }) => (
+          h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h3 className="text-2xl font-semibold mt-3 mb-1.5" {...props} />
           ),
-          h4: ({ node, ...props }) => (
+          h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h4 className="text-xl font-semibold mt-3 mb-1" {...props} />
           ),
-          h5: ({ node, ...props }) => (
+          h5: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h5 className="text-lg font-medium mt-2 mb-1" {...props} />
           ),
-          h6: ({ node, ...props }) => (
+          h6: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
             <h6 className="text-base font-medium mt-2 mb-1" {...props} />
           ),
-          p: ({ node, ...props }) => (
+          p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
             <p className="my-2 leading-relaxed" {...props} />
           ),
-          a: ({ node, href, ...props }) => (
+          a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
             <a
-              href={href}
               className="text-blue-400 hover:underline"
               {...props}
             />
           ),
-          img: ({ node, alt, ...props }) => (
-            <img className="my-4 rounded shadow-xl" alt={alt} {...props} />
+          img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+            <img
+              className="my-4 rounded shadow-xl"
+              src={props.src || '/placeholder.png'}
+              alt={props.alt || ''}
+
+            />
           ),
-          blockquote: ({ node, ...props }) => (
+          blockquote: (props: React.BlockquoteHTMLAttributes<HTMLElement>) => (
             <blockquote
               className="pl-4 border-l-4 border-gray-600 italic my-4"
               {...props}
             />
           ),
-          ul: ({ node, ...props }) => (
+          ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
             <ul className="list-disc list-inside my-2" {...props} />
           ),
-          ol: ({ node, ...props }) => (
+          ol: (props: React.HTMLAttributes<HTMLOListElement>) => (
             <ol className="list-decimal list-inside my-2" {...props} />
           ),
-          li: ({ node, ...props }) => <li className="mt-1" {...props} />,
-          code({ node, inline, className, children, ...props }) {
+          li: (props: React.LiHTMLAttributes<HTMLLIElement>) => <li className="mt-1" {...props} />,
+          code({
+            node,
+            inline,
+            className,
+            children,
+            ...props
+          }: {
+            node?: any;
+            inline?: boolean;
+            className?: string;
+            children?: React.ReactNode;
+            [key: string]: any;
+          }) {
             return inline ? (
               <code className=" bg-black px-1 rounded " {...props}>
                 {children}
@@ -72,11 +89,11 @@ export default function MarkdownPreview({ markdown }: Props) {
               </pre>
             );
           },
-          hr: ({ node, ...props }) => (
+          hr: ({ node, ...props }: { node?: any;[key: string]: any }) => (
             <hr className="my-6 border-gray-700" {...props} />
           ),
         }}
-      >
+      > 
         {markdown || "Digite algo à esquerda para ver o preview aqui..."}
       </ReactMarkdown>
     </div>

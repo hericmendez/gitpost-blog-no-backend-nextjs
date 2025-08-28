@@ -1,5 +1,5 @@
 gitpost-structure/
-    ├── .env
+    ├── .env.local
     ├── .eslintrc.json
     ├── .gitignore
     ├── README.md
@@ -12,16 +12,18 @@ gitpost-structure/
     ├── pnpm-lock.yaml
     ├── postcss.config.mjs
     ├── src/
-    │   ├── 1.ts
     │   ├── app/
     │   │   ├── (app)/
     │   │   │   ├── editor/
     │   │   │   │   ├── [slug]/
     │   │   │   │   │   └── page.tsx
-    │   │   │   │   └── page.tsx
+    │   │   │   │   └── new/
+    │   │   │   │       └── page.tsx
     │   │   │   ├── layout.tsx
     │   │   │   ├── page.tsx
     │   │   │   └── posts/
+    │   │   │       ├── [slug]/
+    │   │   │       │   └── page.tsx
     │   │   │       └── page.tsx
     │   │   ├── (auth)/
     │   │   │   ├── login/
@@ -32,30 +34,46 @@ gitpost-structure/
     │   │   │   ├── auth/
     │   │   │   │   └── [...nextauth]/
     │   │   │   │       └── route.ts
-    │   │   │   ├── post/
-    │   │   │   │   └── [slug]/
+    │   │   │   ├── categories/
+    │   │   │   │   ├── [slug]/
+    │   │   │   │   │   └── route.ts
+    │   │   │   │   └── route.ts
+    │   │   │   ├── docs/
+    │   │   │   │   └── route.ts
+    │   │   │   ├── ping/
+    │   │   │   │   └── route.ts
+    │   │   │   ├── posts/
+    │   │   │   │   ├── [slug]/
+    │   │   │   │   │   └── route.ts
+    │   │   │   │   ├── github/
+    │   │   │   │   │   └── route.ts
+    │   │   │   │   └── route.ts
+    │   │   │   ├── proxy/
+    │   │   │   │   └── posts/
     │   │   │   │       └── route.ts
-    │   │   │   └── posts/
-    │   │   │       ├── [slug]/
-    │   │   │       │   └── route.ts
-    │   │   │       ├── github/
-    │   │   │       │   └── route.ts
+    │   │   │   └── upload-image/
     │   │   │       └── route.ts
     │   │   ├── favicon.ico
     │   │   └── layout.tsx
     │   ├── components/
     │   │   ├── LayoutElements/
     │   │   │   ├── Header.tsx
+    │   │   │   ├── HeaderDropdown.tsx
     │   │   │   ├── HeaderMobile.tsx
     │   │   │   ├── LogoutButton.tsx
     │   │   │   ├── MarginWidthWrapper.tsx
+    │   │   │   ├── Modal.tsx
     │   │   │   ├── PageWrapper.tsx
+    │   │   │   ├── ReusableDropdown.tsx
     │   │   │   ├── SideNav.tsx
+    │   │   │   ├── Spinner.tsx
     │   │   │   └── ThemeToggle.tsx
-    │   │   └── PostElements/
-    │   │       ├── MarkdownPreview.tsx
-    │   │       ├── PostCard.tsx
-    │   │       └── PostEditor.tsx
+    │   │   ├── PostElements/
+    │   │   │   ├── ImageUploader.tsx
+    │   │   │   ├── MarkdownPreview.tsx
+    │   │   │   ├── PostCard.tsx
+    │   │   │   └── PostEditor.tsx
+    │   │   └── SessionSync.tsx
     │   ├── constants.tsx
     │   ├── context/
     │   │   ├── AuthContext.tsx
@@ -66,12 +84,16 @@ gitpost-structure/
     │   │       ├── PostDashboard.tsx
     │   │       └── postService.ts
     │   ├── hooks/
-    │   │   └── useScroll.tsx
+    │   │   ├── useScroll.tsx
+    │   │   └── useSessionUser.tsx
     │   ├── lib/
+    │   │   ├── auth.ts
     │   │   ├── github.ts
     │   │   ├── markdown.ts
+    │   │   ├── post-public.ts
     │   │   ├── slugify.ts
     │   │   └── utils.tsx
+    │   ├── middleware.ts
     │   ├── styles/
     │   │   └── globals.css
     │   ├── types/

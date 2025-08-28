@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from "react";
 import MarkdownPreview from "./MarkdownPreview";
 import { createPost, deletePost } from "@/features/posts/postService";
-import ImageUploader from "./ImageUploader"; // ajuste o path se necessário
+
+import ReactModal from '../LayoutElements/Modal'
+
 
 type PostEditorProps = {
   mode?: "create" | "edit";
@@ -221,7 +223,9 @@ export default function PostEditor({
         </div>
 
         {/* PREVIEW */}
-        <MarkdownPreview markdown={md} />
+        <MarkdownPreview markdown={md} className=" dark:bg-zinc-800 bg-gray-300 p-6 border-2 border-gray-200rounded overflow-y-scroll" />
+
+
       </div>
 
       <div>

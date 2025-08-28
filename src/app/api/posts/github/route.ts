@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 import { generateSafeSlug } from "@/lib/slugify";
 import { createMarkdown } from "@/lib/markdown";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import getServerSession from 'next-auth'
+import { authOptions } from '@/lib/auth'
+
 
 const REPO_NAME = "git-posts";
 const BRANCH = process.env.GITHUB_REPO_BRANCH || "main";

@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useState, useEffect, ReactNode, useContext } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 interface User {
   username: string;
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         router.push("/login");
       }
     }
-  }, []);
+  }, [router]);
 
   const login = async (identifier: string, password: string) => {
     const users = JSON.parse(localStorage.getItem("users") || "[]");

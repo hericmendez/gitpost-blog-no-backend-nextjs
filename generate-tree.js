@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const IGNORE = ["node_modules", ".git"];
+const IGNORE = ['node_modules', '.git', '.next', 'public']
+
 
 function generateTree(dir, prefix = "", isLast = true) {
   const name = path.basename(dir);

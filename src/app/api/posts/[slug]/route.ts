@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Octokit } from "@octokit/rest";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import getServerSession from 'next-auth'
+import { authOptions } from '@/lib/auth'
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
@@ -12,12 +13,15 @@ const BRANCH: string = process.env.GITHUB_REPO_BRANCH || "main";
 const DIR = "posts";
 
 const octokit = new Octokit({ auth: TOKEN });
+type PageProps = { params: Promise<{ slug: string }> }
+
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: PageProps
 ) {
-  const slug = params.slug;
+const { slug } = await params
+
   const url = new URL(_req.url);
   const owner = url.searchParams.get("owner");
 
@@ -64,7 +68,7 @@ export async function GET(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: PageProps
 ) {
   const session = await getServerSession(authOptions);
   const accessToken = session?.accessToken;
@@ -79,14 +83,15 @@ export async function DELETE(
   }
 
   const octokit = new Octokit({ auth: accessToken });
-  const slug = params.slug.replace(".md", "");
+const { slug } = await params
+const cleanSlug = slug.replace('.md', '')
+
 
   try {
-    // Primeiro pega o SHA do arquivo (necessário pro delete)
     const { data } = await octokit.repos.getContent({
       owner,
       repo: REPO_NAME,
-      path: `${DIR}/${slug}.md`,
+      path: `${DIR}/${cleanSlug}.md`,
       ref: BRANCH,
     });
 
@@ -96,11 +101,12 @@ export async function DELETE(
     await octokit.repos.deleteFile({
       owner,
       repo: REPO_NAME,
-      path: `${DIR}/${slug}.md`,
-      message: `Delete post ${slug}.md`,
+      path: `${DIR}/${cleanSlug}.md`,
+      message: `Delete post ${cleanSlug}.md`,
       sha,
       branch: BRANCH,
     });
+
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

@@ -4,6 +4,7 @@ import { signOut } from "next-auth/react";
 import React, { useEffect, useRef, useState, ReactNode } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import ThemeToggle from "./ThemeToggle";
+import Image from "next/image";
 
 
 const HeaderDropdown: React.FC = () => {
@@ -50,7 +51,9 @@ const HeaderDropdown: React.FC = () => {
           <img
             className="rounded-full"
             src={user?.image || "/user.png"}
-            alt=""
+            alt="User"
+            width={50}
+            height={50}
           />
         </div>
       </button>
@@ -60,7 +63,9 @@ const HeaderDropdown: React.FC = () => {
             <img
               className="rounded-full w-[66%] mx-auto "
               src={user?.image || "/user.png"}
-              alt=""
+              alt="User"
+              width={50}
+              height={50}
             />
             <div className="mt-4">
               <p className="text-white font-bold text-xl">{user?.name}</p>

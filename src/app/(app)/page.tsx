@@ -2,12 +2,11 @@
 
 import { useSessionUser } from "@/hooks/useSessionUser";
 import Link from "next/link";
-import { useEffect } from "react";
 
 export default function Home() {
   const { user } = useSessionUser();
-  const owner = localStorage.getItem("git-owner");
-  console.log("owner ==> ", owner);
+
+
   return (
     <>
       <div className="p-10 overflow-y-auto">

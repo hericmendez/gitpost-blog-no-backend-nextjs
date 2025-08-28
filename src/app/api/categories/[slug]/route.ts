@@ -22,12 +22,16 @@ interface PostMeta {
   excerpt?: string;
   content?: string;
 }
+type PageProps = { params: Promise<{ slug: string }> }
+
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: PageProps
 ) {
-  const categorySlug = params.slug.toLowerCase();
+const { slug } = await params
+const categorySlug = slug.toLowerCase()
+
 
   try {
     const url = new URL(request.url);
